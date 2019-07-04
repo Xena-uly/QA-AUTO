@@ -1,0 +1,27 @@
+package net.ukr.xena_reg;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		Phone sony = new Phone("Sony", 800);
+		sony.displayInfo();
+	}
+}
+
+class Phone {
+
+	String name;
+	int prise;
+
+	Phone(String name, int prise) {
+		this.name = name;
+		this.prise = prise;
+	}
+
+	void displayInfo() {
+
+		System.out.println("Phone name - " + name + ", Phone prise - " + prise);
+	}
+}
