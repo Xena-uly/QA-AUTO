@@ -1,0 +1,54 @@
+package net.ukr.xena_reg;
+
+import java.util.Random;
+
+public class Main {
+
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+
+		String acNum = "2961926";
+		double sb = setBalance();
+
+		BankAccount myBA = new BankAccount(acNum, sb);
+		myBA.debit(1000);
+		myBA.credit(50);
+		myBA.credit(10000);
+
+	}
+
+	public static double setBalance() {
+
+		Random rn = new Random();
+		double bal = rn.nextInt(10000);
+		System.out.println("You currient balance is - " + bal);
+		return bal;
+
+	}
+}
+
+class BankAccount {
+	String accountNumber;
+	double balance;
+
+	BankAccount(String accountNumber, double balance) {
+		this.accountNumber = accountNumber;
+		this.balance = balance;
+	}
+
+	double credit(double sumCredit) {
+		if (balance < sumCredit) {
+			System.out.println("There is not enough money in the account");
+		} else {
+			balance = balance - sumCredit;
+			System.out.println("Currient balance after credit is -  " + balance);
+		}
+		return balance;
+	}
+
+	double debit(double sumDebit) {
+		balance = balance + sumDebit;
+		System.out.println("Currient balance after debit is -  " + balance);
+		return balance;
+	}
+}
