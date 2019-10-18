@@ -1,0 +1,117 @@
+import org.junit.After;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.Test;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.chrome.ChromeDriver;
+import org.openqa.selenium.interactions.Action;
+import org.openqa.selenium.interactions.Actions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.FluentWait;
+import org.openqa.selenium.support.ui.WebDriverWait;
+
+import java.util.concurrent.TimeUnit;
+
+public class Lesson6ActionTest {
+
+    WebDriver driver;
+
+    private static final String BASE_URL = "http://automationpractice.com/index.php";
+    private static final String PATH_TO_DRIVER = "src\\main\\resources\\Driwers\\chromedriver.exe";
+
+    private String buttonAddToCart = "//a[@title='Add to cart']";
+    private String proceedCheckout = "//a[@title='Proceed to checkout']";
+    private String deleteIcon = "//i[@class='icon-trash']";
+
+    private String womenSection = "//a[@title='Women']";
+    private String sliderMin = "//a[contains(@style,'left: 0%;')]";
+    private String sliderMax = "//a[contains(@style,'left: 100%;')]";
+    private String dressAddToCart = "//a[@title='Add to cart' and contains(@data-id-product,'4')]";
+    private String saleProductToCart = "//a[@title='Add to cart' and contains(@data-id-product,'5')]";
+    private String closeToCartWindow = "//span[@title='Close window']";
+    private String deleteFromSummary = "//a[@id='4_16_0_0']";
+    private String listModeButton = "//li[@id='list']";
+
+
+    @Before
+    public void setUp()  {
+
+        System.setProperty("webdriver.chrome.driver",PATH_TO_DRIVER);
+        driver = new ChromeDriver();
+        driver.manage().window().maximize();
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+        driver.navigate().to(BASE_URL);
+        //WebDriverWait webDriverWait = new WebDriverWait(driver, 10);
+    }
+
+    @Test
+    public void sliderDeleteActionTest() throws InterruptedException {
+        final String expectedTotalPrice = "$30.98";
+
+        xpathButtonClick(womenSection);
+        waitedButtonClick(listModeButton);
+
+        dragLeftSlider(sliderMin);
+        dragRightSlider(sliderMax);
+
+        xpathButtonClick(dressAddToCart);
+        xpathButtonClick(closeToCartWindow);
+        xpathButtonClick(saleProductToCart);
+        xpathButtonClick(proceedCheckout);
+        xpathButtonClick(deleteFromSummary);
+
+        Thread.sleep(10000);
+
+       // FluentWait<WebDriver> wait = new FluentWait<WebDriver>(driver);
+       // wait(100);
+
+        String actualTotalPrice = driver.findElement(By.id("total_price")).getText();
+        Assert.assertEquals("Total and actual price are different", expectedTotalPrice, actualTotalPrice);
+    }
+
+    private void waitedButtonClick(String buttonName) {
+        WebDriverWait webDriverWait = new WebDriverWait(driver, 40);
+        webDriverWait.until(ExpectedConditions.elementToBeClickable(driver.findElement(By.xpath(buttonName)))).click();
+    }
+
+
+    private void xpathButtonClick(String buttonName) {
+        driver.findElement(By.xpath(buttonName)).click();
+    }
+
+    private void dragLeftSlider(String leftSlider){
+        WebElement sliderA = driver.findElement(By.xpath(leftSlider));
+        Actions move = new Actions(driver);
+        move.dragAndDropBy(sliderA,60, 0).click();
+        move.build().perform();
+
+    }
+
+    private void dragRightSlider(String rightSlider){
+        WebElement sliderB = driver.findElement(By.xpath(rightSlider));
+        Actions move = new Actions(driver);
+        move.dragAndDropBy(sliderB, -50, 0).click();
+        move.build().perform();
+
+    }
+
+    private void clickAndHoldElement(String element) {
+        WebElement element1  = driver.findElement(By.xpath(element));
+        Actions builder = new Actions(driver);
+        builder.clickAndHold(element1).build().perform();
+    }
+
+    private void hoverToElement(String element) {
+        WebElement element1  = driver.findElement(By.xpath(element));
+        Actions builder = new Actions(driver);
+        builder.moveToElement(element1).build().perform();
+    }
+
+    @After
+    public void afterTest() {
+        driver.close();
+    }
+
+}
